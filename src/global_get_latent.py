@@ -3,7 +3,7 @@ import cv2
 import argparse
 import torch
 parser = argparse.ArgumentParser(description='Process Options.')
-parser.add_argument('--input_dir', default='xxr.png', type=str)
+parser.add_argument('--input_dir', default='input.jpg', type=str)
 parser.add_argument('--data_type', default='face', type=str) #[face, cat]
 args = parser.parse_args()
 

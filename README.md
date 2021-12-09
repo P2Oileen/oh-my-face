@@ -6,7 +6,7 @@ StyleCLIP is an excellent algorithm that acts on the latent code of StyleGAN2 to
 
 Thus, we use the optical flow model to detect the change in different regions between the StyleCLIP generated image and the original image, sample more from the original in slightly-edited areas, then use frame interpolation to perform weighted fusion, which is simple yet efficient.
 
-We also provide weights for cat face editing, containing cat facial landmark recognition from [pycatfd](https://github.com/marando/pycatfd) and e4e-cat model. e4e-cat is trained via [afhq-cat dataset](https://github.com/clovaai/stargan-v2#animal-faces-hq-dataset-afhq) and [StyleGAN2-cat](https://github.com/NVlabs/stylegan2) weights. [StyleGAN2-pytorch/convert_weights.py](https://github.com/rosinality/stylegan2-pytorch/blob/master/convert_weight.py) is used to convert the tensorflow weights.
+We provide weights for cat face editing, containing cat facial landmark recognition from [pycatfd](https://github.com/marando/pycatfd) and e4e-cat model. e4e-cat is trained via [afhq-cat dataset](https://github.com/clovaai/stargan-v2#animal-faces-hq-dataset-afhq) and [StyleGAN2-cat](https://github.com/NVlabs/stylegan2) weights. [StyleGAN2-pytorch/convert_weights.py](https://github.com/rosinality/stylegan2-pytorch/blob/master/convert_weight.py) is used to convert the tensorflow weights.
 
 ## Usage
 
@@ -20,7 +20,7 @@ We also provide weights for cat face editing, containing cat facial landmark rec
 * Clone this repository
 
 ```bash
-git clone ohmyface
+git clone https://github.com/P2Oileen/oh-my-face
 ```
 
 * Dependencies

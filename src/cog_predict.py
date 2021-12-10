@@ -47,8 +47,8 @@ def run_on_batch(inputs, net):
         images = images[:, :, 32:224, :]
     return images, latents
 
-def get_latent_code(img, data_type):
-    img = align_func(img, data_type).transpose(1, 2, 0) # 1024,1024,3
+def get_latent_code(img, data_type, weight_dir):
+    img = align_func(img, data_type, weight_dir).transpose(1, 2, 0) # 1024,1024,3
     img = cv2.resize(img, (RESIZE_SIZE, RESIZE_SIZE))[:,:,::-1] * 255 # 256,256,3
     aligned_image = img[:,:,::-1]
     img = Image.fromarray(np.uint8(img))

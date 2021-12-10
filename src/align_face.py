@@ -6,9 +6,9 @@ import cv2
 from shape_predictor import align_face
 
 
-def align_func(img, data_type):
+def align_func(img, data_type, weight_dir):
     if data_type == 'face':
-        predictor_face = dlib.shape_predictor('./weights/shape_predictor_68_face_landmarks.dat')
+        predictor_face = dlib.shape_predictor(weight_dir + '/shape_predictor_68_face_landmarks.dat')
         faces = align_face(img, predictor_face, data_type)
     else:
         predictor_cat = dlib.shape_predictor('./weights/shape_predictor_cat.dat')

@@ -20,6 +20,5 @@ beta = args.beta
 alpha = args.alpha
 
 result = global_transfer(latent.cpu().detach().numpy(), target = args.transfer_type, beta = beta, alpha = alpha)
-print(result.shape)
 cv2.imwrite("output.jpg",result[:,:,::-1])
 

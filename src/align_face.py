@@ -11,7 +11,7 @@ def align_func(img, data_type, weight_dir):
         predictor_face = dlib.shape_predictor(weight_dir + '/shape_predictor_68_face_landmarks.dat')
         faces = align_face(img, predictor_face, data_type)
     else:
-        predictor_cat = dlib.shape_predictor('./weights/shape_predictor_cat.dat')
+        predictor_cat = dlib.shape_predictor(weight_dir + '/shape_predictor_cat.dat')
         faces = align_face(img, predictor_cat, data_type)
     for i,face in enumerate(faces):
         if i > 0:

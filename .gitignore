@@ -1,8 +1,8 @@
 *.jpg
 *.pt
 *.gz
+run_brainpp.py
 .gitignore
 weights/
 ffhq/
 cat/
-run_brainpp.py

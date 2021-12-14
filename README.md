@@ -66,9 +66,11 @@ mv weights oh-my-face/src/
 ```
 python3 run.py \
 --input_dir='input.jpg' \ # Path to your input image
+--output_dir='output.jpg' \ # Path to output directory
 --option_beta=0.15 \ # Range from 0.08 to 0.3, corresponds to the disentanglement threshold
 --option_alpha=4.1 \ # Range from -10.0 to 10.0, corresponds to the manipulation strength
 --option_gamma=3 \ # Range from 1 to 10, corresponds to RIFE's sample strength
 --neutral='face' \ # Origin description
 --target='face with smile' \ # Target description
 ```
+

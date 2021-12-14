@@ -18,33 +18,28 @@ from encoder4editing.models.psp import pSp  # we use the pSp framework to load t
 experiment_type = 'ffhq_encode'
 RESIZE_SIZE = 256
 
-EXPERIMENT_DATA_ARGS = {
-    "ffhq_encode": {
-        "model_path": "weights/e4e_ffhq_encode.pt",
-    },
-}
 # Setup required image transformations
-EXPERIMENT_ARGS = EXPERIMENT_DATA_ARGS[experiment_type]
-EXPERIMENT_ARGS['transform'] = transforms.Compose([
+
+trans = transforms.Compose([
     transforms.Resize((RESIZE_SIZE, RESIZE_SIZE)),
     transforms.ToTensor(),
     transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
 
-model_path = EXPERIMENT_ARGS['model_path']
-ckpt = torch.load(model_path, map_location='cpu')
-opts = ckpt['opts']
-opts['checkpoint_path'] = model_path
-opts= Namespace(**opts)
-net = pSp(opts)
-net.eval()
-net.cuda()
+model_path = ['weights/e4e_ffhq_encode.pt','weights/e4e_cat_encode.pt']
+ckpt = [torch.load(model_path[0], map_location='cpu'), torch.load(model_path[1], map_location='cpu')]
+opts = [ckpt[0]['opts'], ckpt[1]['opts']]
+opts[0]['checkpoint_path'],opts[1]['checkpoint_path'] = model_path[0], model_path[1]
+opts = [Namespace(**opts[0]), Namespace(**opts[1])]
+net = [pSp(opts[0]), pSp(opts[1])]
+net[0].eval(), net[1].eval()
+net[0].cuda(), net[1].cuda()
 print('Model successfully loaded!')
 
 
 def run_on_batch(inputs, net):
     images, latents = net(inputs.to("cuda").float(), randomize_noise=False, return_latents=True)
-    if experiment_type == 'cars_encode':
-        images = images[:, :, 32:224, :]
+    # if experiment_type == 'cars_encode':
+    #     images = images[:, :, 32:224, :]
     return images, latents
 
 def get_latent_code(img, data_type, weight_dir):
@@ -52,17 +47,19 @@ def get_latent_code(img, data_type, weight_dir):
     img = cv2.resize(img, (RESIZE_SIZE, RESIZE_SIZE))[:,:,::-1] * 255 # 256,256,3
     aligned_image = img[:,:,::-1]
     img = Image.fromarray(np.uint8(img))
+
+    if data_type == 'face':
+        data_choice = 0
+    else:
+        data_choice = 1
     
-    img_transforms = EXPERIMENT_ARGS['transform']
-    transformed_image = img_transforms(img)
+    transformed_image = trans(img)
 
     with torch.no_grad():
-        tic = time.time()
-        images, latents = run_on_batch(transformed_image.unsqueeze(0), net)
+        images, latents = run_on_batch(transformed_image.unsqueeze(0), net[data_choice])
         latent = latents[0]
+
         #result_image, latent = images[0], latents[0]
-        toc = time.time()
-        print('Inference took {:.4f} seconds.'.format(toc - tic))
     #result_image = ((result_image.cpu().numpy().transpose(1, 2, 0) + 1) / 2)[:,:,::-1] * 255
     return latent, aligned_image
     

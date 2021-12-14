@@ -44,6 +44,7 @@ m0 = img0.mean(dim=(0,1))
 s1 = img1.std(dim=(0,1))
 m1 = img1.mean(dim=(0,1))
 img0 = m1 + (img0 - m0) * s1 / s0
+img0 = torch.clamp(img0, 0, 1)
 img0 = img0.permute(2, 0, 1)
 img1 = img1.permute(2, 0, 1)
 img0 = img0.to(device).unsqueeze(0)

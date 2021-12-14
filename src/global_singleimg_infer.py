@@ -8,27 +8,30 @@ from global_directions.manipulate import Manipulator
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model, preprocess = clip.load("ViT-B/32", device=device) 
-
-M=Manipulator(dataset_name='ffhq') 
-fs3=np.load('./ffhq/fs3.npy')
+M=[]
+M.append(None)#Manipulator(dataset_name='ffhq'))
+M.append(Manipulator(dataset_name='cat'))
+fs3=[np.load('./ffhq/fs3.npy'), np.load('./cat/fs3.npy')]
 np.set_printoptions(suppress=True)
 
-def global_transfer(latent, neutral = 'face', target = 'face with blue eyes', beta=0.15, alpha=4.1):
+def global_transfer(latent, data_type = 'face', neutral = 'face', target = 'face with blue eyes', beta=0.15, alpha=4.1):
 
-    tik = time.time()
+    if data_type == 'face':
+        data_choice = 0
+    else:
+        data_choice = 1
+
     classnames=[target,neutral]
     dt=GetDt(classnames,model)
-    dlatent_tmp = M.W2S(latent)
+    dlatent_tmp = M[data_choice].W2S(latent)
     
-    M.alpha=[alpha]
-    M.num_images=1
-    M.manipulate_layers=None
-    boundary_tmp2,c=GetBoundary(fs3,dt,M,threshold=beta)
-    codes=M.MSCode(dlatent_tmp,boundary_tmp2)
-    out=M.GenerateImg(codes)
+    M[data_choice].alpha=[alpha]
+    M[data_choice].num_images=1
+    M[data_choice].manipulate_layers=None
+    boundary_tmp2,c=GetBoundary(fs3[data_choice],dt,M[data_choice],threshold=beta)
+    codes=M[data_choice].MSCode(dlatent_tmp,boundary_tmp2)
+    out=M[data_choice].GenerateImg(codes)
     generated=Image.fromarray(out[0,0]).resize((512,512))
     generated=np.asarray(generated)
 
-    tok = time.time()
-    print(tok - tik)
     return generated

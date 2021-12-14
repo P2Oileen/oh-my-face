@@ -34,8 +34,8 @@ def Vis(bname,suffix,out,rownames=None,colnames=None):
 
 
 
-def LoadData():
-    tmp= './ffhq/'+'S'
+def LoadData(dataset_name):
+    tmp= './'+dataset_name+'/S'
     with open(tmp, "rb") as fp:   #Pickling
         s_names,all_s=pickle.load(fp)
     dlatents=all_s
@@ -49,17 +49,17 @@ def LoadData():
         else:
             pindexs.append(i)
     
-    tmp='./ffhq/'+'S_mean_std'
+    tmp='./' + dataset_name + '/S_mean_std'
     with open(tmp, "rb") as fp:   #Pickling
         m,std=pickle.load( fp)
     
     return dlatents,s_names,mindexs,pindexs,m,std
 
 
-def LoadModel(model_name):
+def LoadModel(dataset_name, model_name):
     # Initialize TensorFlow.
     tflib.init_tf()
-    tmp='./ffhq/' + model_name
+    tmp='./' +dataset_name+ '/' + model_name
     with open(tmp, 'rb') as f:
         _, _, Gs = pickle.load(f)
     Gs.print_layers()
@@ -102,12 +102,12 @@ class Manipulator():
         self.viz_size=256
         self.manipulate_layers=None #which layer to manipulate, list
         
-        self.dlatents,self.s_names,self.mindexs,self.pindexs,self.code_mean,self.code_std=LoadData()
+        self.dlatents,self.s_names,self.mindexs,self.pindexs,self.code_mean,self.code_std=LoadData(dataset_name)
 
         self.sess = sess or tf.InteractiveSession()
         init = tf.global_variables_initializer()
         self.sess.run(init)
-        self.Gs=LoadModel(self.model_name)
+        self.Gs=LoadModel(dataset_name, self.model_name)
         self.num_layers=len(self.dlatents)
         
         self.Vis=Vis
@@ -133,19 +133,21 @@ class Manipulator():
         self.fmt = dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True)
         self.img_size=self.Gs.output_shape[-1]
     
-    def GenerateImg(self,codes):
+    def GenerateImg(self, codes):
         
-
         num_images,step=codes[0].shape[:2]
-
-            
         out=np.zeros((num_images,step,self.img_size,self.img_size,3),dtype='uint8')
         for i in range(num_images):
             for k in range(step):
                 d={}
                 for m in range(len(self.s_names)):
                     d[self.s_names[m]]=codes[m][i,k][None,:]  #need to change
-                d['G_synthesis_1/4x4/Const/Shape:0']=np.array([1,18,  512], dtype=np.int32)
+
+                if self.dataset_name == 'ffhq':
+                    d['G_synthesis_1/4x4/Const/Shape:0']=np.array([1, 18, 512], dtype=np.int32)
+                else:
+                    d['G_synthesis_1/4x4/Const/Shape:0']=np.array([1, 14, 512], dtype=np.int32)
+                
                 d.update(self.noise_constant)
                 img=tflib.run('G_synthesis_1/images_out:0', d)
                 image=convert_images_to_uint8(img, nchw_to_nhwc=True)
@@ -227,27 +229,3 @@ class Manipulator():
             self.s_names,
             feed_dict={'G_synthesis_1/dlatents_in:0': dlatent_tmp})
         return all_s
-        
-    
-    
-    
-    
-    
-
-
-#%%
-if __name__ == "__main__":
-    
-    
-    M=Manipulator(dataset_name='ffhq')
-    
-    
-    #%%
-    M.alpha=[-5,0,5]
-    M.num_images=20
-    lindex,cindex=6,501
-    
-    M.manipulate_layers=[lindex]
-    codes,out=M.EditOneC(cindex) #dlatent_tmp
-    tmp=str(M.manipulate_layers)+'_'+str(cindex)
-    M.Vis(tmp,'c',out)

@@ -1,5 +1,6 @@
 # Oh-My-Face
 ![image](demo.png)
+ [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/P2Oileen/oh-my-face/blob/main/oh-my-face.ipynb)
 This project is based on [StyleCLIP](https://github.com/orpatashnik/StyleCLIP), [RIFE](https://github.com/hzwer/arxiv2020-RIFE), and [encoder4editing](https://github.com/omertov/encoder4editing), which aims to expand human face editing via Global Direction of StyleCLIP, especially to maintain similarity during editing. 
 
 StyleCLIP is an excellent algorithm that acts on the latent code of StyleGAN2 to edit images guided by texts. Global Direction uses models such as e4e to convert images into latent codes and then further editing. However, this conversion causes information loss of the original image and dissimilarities.

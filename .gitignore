@@ -1,6 +1,7 @@
 *.jpg
 *.pt
 *.gz
+run_brainpp.py
 weights/
 ffhq/
 cat/

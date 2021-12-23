@@ -58,8 +58,8 @@ wget https://drive.google.com/file/d/1efFoGShtZhcd6SCxOPu3AMbKZus478au/view?usp=
 tar -zxvf ffhq.tar.gz
 mv ffhq src/
 wget https://drive.google.com/file/d/1bXhWOnwCTTXTz7T7zJ1iXA717tyj-n3U/view?usp=sharing
-tar -zxvf oh-my-face/weights-face.tar.gz
-mv weights oh-my-face/src/
+tar -zxvf weights-face.tar.gz
+mv weights src/
 ```
 
 #### Edit image via oh-my-face
